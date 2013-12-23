@@ -12,7 +12,7 @@ describe('dropdownToggle', function() {
   }));
 
   function dropdown() {
-    return $compile('<li class="dropdown"><a dropdown-toggle></a><ul dropdown-toggle><li>Hello</li></ul></li>')($rootScope);
+    return $compile('<li class="dropdown"><a dropdown-toggle open="openFn()" close="closeFn()"></a><ul dropdown-toggle><li>Hello</li></ul></li>')($rootScope);
   }
   
   it('should toggle on `a` click', function() {
@@ -62,6 +62,18 @@ describe('dropdownToggle', function() {
     elm2.find('a').click();
     expect(elm1.hasClass('open')).toBe(false);
     expect(elm2.hasClass('open')).toBe(true);
+  });
+
+  it('should call the callbacks when the dropdown opens/closes', function() {
+    $rootScope.openFn = jasmine.createSpy('open');
+    $rootScope.closeFn = jasmine.createSpy('close');
+    var elm = dropdown();
+    elm.find('a').click();
+    expect($rootScope.openFn.calls.length).toBe(1);
+    expect($rootScope.closeFn.calls.length).toBe(0);
+    elm.find('a').click();
+    expect($rootScope.openFn.calls.length).toBe(1);
+    expect($rootScope.closeFn.calls.length).toBe(1);
   });
 });
   

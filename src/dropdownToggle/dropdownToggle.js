@@ -1,6 +1,10 @@
 /*
  * dropdownToggle - Provides dropdown menu functionality in place of bootstrap js
  * @restrict class or attribute
+ *
+ * @param {string=} open An expression to evaluate when the dropdown opens.
+ * @param {string=} close An expression to evaluate when the dropdown closes.
+ *
  * @example:
    <li class="dropdown">
      <a class="dropdown-toggle">My Dropdown Menu</a>
@@ -17,6 +21,10 @@ angular.module('ui.bootstrap.dropdownToggle', []).directive('dropdownToggle', ['
       closeMenu   = angular.noop;
   return {
     restrict: 'CA',
+    scope: {
+      onOpen: '&open',
+      onClose: '&close'
+    },
     link: function(scope, element, attrs) {
       scope.$watch('$location.path', function() { closeMenu(); });
       element.parent().bind('click', function() { closeMenu(); });
@@ -43,8 +51,10 @@ angular.module('ui.bootstrap.dropdownToggle', []).directive('dropdownToggle', ['
             element.parent().removeClass('open');
             closeMenu = angular.noop;
             openElement = null;
+            scope.onClose();
           };
           $document.bind('click', closeMenu);
+          scope.onOpen();
         }
       });
     }
